@@ -22,7 +22,8 @@ class handler(BaseHTTPRequestHandler):
             if country_name:
                 capital_info = get_capital(country_name)
                 self.send_response(200)
-                self.send_header('Content-type', 'application/json')
+                # self.send_header('Content-type', 'application/json')
+                self.send_header('Content-type', 'text/plain')
                 self.end_headers()
                 self.wfile.write(capital_info.encode())
             else: 
