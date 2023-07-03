@@ -1,44 +1,132 @@
-import requests
-from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib import parse
+import requests
+from flask import Flask, request, Response
 
-class handler(BaseHTTPRequestHandler):
+app = Flask(__name__)
+
+@app.route("/capital-finder")
+def capital_finder():
+    BASE_URL = "https://restcountries.com/v3.1"
+    country = request.args.get("country")
+    capital = request.args.get("capital")
     
-    def do_GET(self):
-        BASE_URL = 'https://restcountries.com/v3.1/'
-        s = self.path
-        url_components = parse.urlsplit(s)
-        query_string_list = parse.parse_qsl(url_components.query)
-        dic = dict(query_string_list)
-        country = dic.get('country')
-        capital = dic.get('capital')
-        if country and capital:
-            message = f'Country: {country} Capital: {capital}'
-        elif country:
-            url = f'{BASE_URL}/name/{country}'
-            r = requests.get(url)
-            data = r.json()
-            capitals = data[0]['capital']
-            join_capitals = ' and '.join(capitals)
-            message = f'The capital of {country} is {join_capitals}.'
-        elif capital:
-            url = f'{BASE_URL}/capital/{capital}'
-            r = requests.get(url)
-            data = r.json()
-            message = str(data)
-        else:
-            message = 'Invalid request. Please provide a country name or capital.'
-        self.send_response(200)
-        self.send_header('Content-type', 'text/plain')
-        self.end_headers()
-        self.wfile.write(message.encode())
-        return
+    if country and capital:
+        message = "Stretch goal coming soon"
+    elif country:
+        url = f"{BASE_URL}/name/{country}"
+        r = requests.get(url)
+        data = r.json()
+        capitals = data[0]["capital"]
+        joined_capitals = " and ".join(capitals)
+        message = f"The capital of {country} is {joined_capitals}"
+    elif capital:
+        url = f"{BASE_URL}/capital/{capital}"
+        r = requests.get(url)
+        data = r.json()
+        message = str(data)
+    else:
+        message = "Supply a country or capital please"
+        
+    response = Response(message, mimetype="text/plain")
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET"
     
+    return response
+
 if __name__ == "__main__":
-    server_address = ("", 5500)
-    httpd = HTTPServer(server_address, handler)
-    print(f"Started on http://localhost:{server_address[1]}/capital-finder")
-    httpd.serve_forever()
+    app.run(port=8080)
+
+
+# from urllib import parse
+# import requests
+# from flask import Flask, request, Response
+# from http.server import BaseHTTPRequestHandler
+# app = Flask(__name__)
+
+# class Handler(BaseHTTPRequestHandler):
+#     def do_GET(self):
+#         BASE_URL = "https://restcountries.com/v3.1"
+#         s = self.path
+#         url_components = parse.urlsplit(s)
+#         query_string_list = parse.parse_qsl(url_components.query)
+#         dic = dict(query_string_list)
+#         country = dic.get("country")
+#         capital = dic.get("capital")
+#         if country and capital:
+#             message = "Stretch goal coming soon"
+#         elif country:
+#             url = f"{BASE_URL}/name/{country}"
+#             r = requests.get(url)
+#             data = r.json()
+#             capitals = data[0]["capital"]
+#             joined_capitals = " and ".join(capitals)
+#             message = f"The capital of {country} is {joined_capitals}"
+#         elif capital:
+#             url = f"{BASE_URL}/capital/{capital}"
+#             r = requests.get(url)
+#             data = r.json()
+#             message = str(data)
+#         else:
+#             message = "Supply a country or capital please"
+#         response = Response(message, mimetype="text/plain")
+#         response.headers["Access-Control-Allow-Origin"] = "*"
+#         response.headers["Access-Control-Allow-Methods"] = "GET"
+#         return response
+    
+# @app.route("/capital-finder")
+# def capital_finder():
+#     with Handler(request.environ) as handler:
+#         return handler.handle_request(request.environ)
+# # Optional: Add more routes or endpoints here
+# # Entry point for Vercel serverless function
+
+# def handler(event, context):
+#     return serverless_wsgi.handle_request(app, event, context)
+
+# if __name__ == "__main__":
+#     app.run(port=8080)
+
+# import requests
+# from http.server import BaseHTTPRequestHandler, HTTPServer
+# from urllib import parse
+
+# class handler(BaseHTTPRequestHandler):
+    
+#     def do_GET(self):
+#         BASE_URL = 'https://restcountries.com/v3.1/'
+#         s = self.path
+#         url_components = parse.urlsplit(s)
+#         query_string_list = parse.parse_qsl(url_components.query)
+#         dic = dict(query_string_list)
+#         country = dic.get('country')
+#         capital = dic.get('capital')
+#         if country and capital:
+#             message = f'Country: {country} Capital: {capital}'
+#         elif country:
+#             url = f'{BASE_URL}name/{country}'
+#             r = requests.get(url)
+#             data = r.json()
+#             capitals = data[0]['capital']
+#             join_capitals = ' and '.join(capitals)
+#             message = f'The capital of {country} is {join_capitals}.'
+#         elif capital:
+#             url = f'{BASE_URL}capital/{capital}'
+#             r = requests.get(url)
+#             data = r.json()
+#             message = str(data)
+#         else:
+#             message = 'Invalid request. Please provide a country name or capital.'
+#         self.send_response(200)
+#         self.send_header('Content-type', 'text/plain')
+#         self.end_headers()
+#         self.wfile.write(message.encode())
+#         return
+    
+# if __name__ == "__main__":
+#     server_address = ("", 5500)
+#     httpd = HTTPServer(server_address, handler)
+#     print(f"Started on http://localhost:{server_address[1]}/capital-finder")
+#     httpd.serve_forever()
 
 
 # def get_capital(country):
