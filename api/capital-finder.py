@@ -15,14 +15,14 @@ class handler(BaseHTTPRequestHandler):
         if country and capital:
             message = f'Country: {country} Capital: {capital}'
         elif country:
-            url = f'{BASE_URL}name/{country}'
+            url = f'{BASE_URL}/name/{country}'
             r = requests.get(url)
             data = r.json()
             capitals = data[0]['capital']
             join_capitals = ' and '.join(capitals)
             message = f'The capital of {country} is {join_capitals}.'
         elif capital:
-            url = f'{BASE_URL}capital/{capital}'
+            url = f'{BASE_URL}/capital/{capital}'
             r = requests.get(url)
             data = r.json()
             message = str(data)
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     print(f"Started on http://localhost:{server_address[1]}/capital-finder")
     httpd.serve_forever()
 
-    
+
 # def get_capital(country):
 #     url = f'https://restcountries.com/v3.1/name/{country}'
 #     response = requests.get(url)
