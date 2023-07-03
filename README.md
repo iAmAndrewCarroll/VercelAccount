@@ -1,0 +1,1 @@
+Dont forget to add the /api/capital-finder to the end of the link on Vercel
