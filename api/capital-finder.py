@@ -16,13 +16,13 @@ class handler(BaseHTTPRequestHandler):
     
     def do_GET(self):
         if self.path.startswitch('/capital-finder'):
-            query_params = self.path.split('?')[i]
+            query_params = self.path.split('?')[1]
             params = dict(param.split('=') for param in query_params.split('&'))
             country_name = params.get('country', '')
             if country_name:
                 capital_info = get_capital(country_name)
                 self.send_response(200)
-                self.send_header('Content-type', 'text/plain')
+                self.send_header('Content-type', 'application/json')
                 self.end_headers()
                 self.wfile.write(capital_info.encode())
             else: 
